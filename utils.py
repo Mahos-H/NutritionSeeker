@@ -1,5 +1,6 @@
 import os
 import torch
+import torch.nn as nn
 from torchvision import models, transforms
 from transformers import BertTokenizer, BertModel
 from transformers import DistilBertTokenizer, DistilBertModel
