@@ -69,7 +69,7 @@ def predict(model, image_tensor, source):
         output = model(image_tensor, source)  # Pass tensor and classification type
         probabilities = torch.sigmoid(output).cpu().numpy().flatten() # Get predicted label
     
-    return output, predicted_class
+    return output, probabilities
 class NoviceNutriVision(torch.nn.Module):
     def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu",visual_fc= nn.Linear(62720, 1280)):
         super(NoviceNutriVision, self).__init__()
