@@ -8,7 +8,7 @@ from torchvision import models, transforms
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from datetime import datetime
 from transformers import BertTokenizer, BertModel
-os.environ["STREAMLIT_DEV_MODE"] = "false"
+torch.classes.__path__ = []
 # --- Configuration ---
 CFG_FRCNN_MODEL = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
