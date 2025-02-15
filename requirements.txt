@@ -7,3 +7,4 @@ torchvision
 numpy<2
 ultralytics
 segment_anything
+transformers
