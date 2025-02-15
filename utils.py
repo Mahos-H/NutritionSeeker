@@ -2,7 +2,7 @@ import os
 import torch
 from torchvision import models, transforms
 from transformers import BertTokenizer, BertModel
-
+from transformers import DistilBertTokenizer, DistilBertModel
 # --- Configuration ---
 MODEL_DIR = "models/"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
