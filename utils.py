@@ -125,13 +125,18 @@ class NoviceNutriVision(torch.nn.Module):
         fused = self.fusion_fc(fused_input)
     
         if source == "food_nutrition":
-            return self.food_nutrition_head(fused)
+            output = self.food_nutrition_head(fused)
         elif source == "fv":
-            return self.fv_head(fused)
+            output = self.fv_head(fused)
         elif source == "fastfood":
-            return self.fastfood_head(fused)
+            output = self.fastfood_head(fused)
         else:
             raise ValueError("Invalid source")
+    
+        # Apply softmax to make sure values sum to 1
+        output = torch.sigmoid(output, dim=-1)
+    
+        return output
 
 
 
