@@ -7,7 +7,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from model import NoviceNutriVision
 from utils import load_model, predict 
-os.environ["STREAMLIT_DEV_MODE"] = "false"
+torch.classes.__path__ = []
 def setup_ui():
     st.set_page_config(page_title="NutriVision Inference", layout="centered")
     st.markdown("""
