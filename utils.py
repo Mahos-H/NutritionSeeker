@@ -74,7 +74,7 @@ class NoviceNutriVision(torch.nn.Module):
     def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu",visual_fc= nn.Linear(63488, 2048)):
         super(NoviceNutriVision, self).__init__()
         self.device = device
-        self.visual_fc = nn.Linear(63488, 2048)
+        self.visual_fc = nn.Linear(2048,63488)
         # Lightweight CNN for feature extraction
         mobilenet = models.mobilenet_v2(pretrained=True)
         self.cnn = torch.nn.Sequential(*list(mobilenet.features.children())).to(self.device).eval()
