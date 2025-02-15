@@ -4,7 +4,7 @@ import os
 import wget
 from PIL import Image
 import numpy as np
-from ultralytics import YOLO
+from ultralytics import YOLO,settings
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from datetime import datetime
 from torchvision import transforms
@@ -12,6 +12,13 @@ from transformers import BertTokenizer, BertModel
 import torchvision.models as models
 torch.classes.__path__ = []
 # --- Configuration ---
+runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
+os.makedirs(runs_dir, exist_ok=True)
+
+# Update settings to use this directory
+settings.update({"runs_dir": runs_dir})
+
+print(f"Ultralytics runs directory set to: {runs_dir}")
 CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
 CFG_MODEL_DIR = "models/"
