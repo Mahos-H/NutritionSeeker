@@ -67,7 +67,7 @@ def predict(model, image_tensor, source):
 
     with torch.no_grad():
         output = model(image_tensor, source)  # Pass tensor and classification type
-        predicted_class = torch.argmax(output, dim=1).cpu().item()  # Get predicted label
+        probabilities = torch.sigmoid(output).cpu().numpy().flatten() # Get predicted label
     
     return output, predicted_class
 class NoviceNutriVision(torch.nn.Module):
