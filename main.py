@@ -9,7 +9,7 @@ from model import NoviceNutriVision
 from utils import load_model, predict 
 import torch
 from torchvision import transforms
-st.set_page_config(page_title="NutriVision Inference", layout="centered")
+#st.set_page_config(page_title="NutriVision Inference", layout="centered")
 torch.classes.__path__ = []
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
