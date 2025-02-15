@@ -34,25 +34,31 @@ def load_model():
     return model, DEVICE  # Returning both the model and device
 
 
-def predict(model, dataloader):
-    """Run inference on a dataset using a trained model."""
+from PIL import Image
+
+def predict(model, image_path, source):
+    """
+    Predict the class for a single image using the trained model.
+    
+    Parameters:
+    - model: Trained NoviceNutriVision model.
+    - image_path: Path to the image file.
+    - source: Classification type ('food_nutrition', 'fv', or 'fastfood').
+    
+    Returns:
+    - Prediction scores (tensor) and predicted class label.
+    """
     model.to(DEVICE)
     model.eval()
-    predictions = []
+    
+    # Load image
+    image = Image.open(image_path).convert("RGB")  # Ensure it's in RGB format
 
     with torch.no_grad():
-        for inputs, _ in dataloader:
-            inputs = inputs.to(DEVICE)
-            outputs = model(inputs)
-
-            # If output is logits, apply softmax for classification
-            if isinstance(outputs, torch.Tensor):
-                outputs = torch.softmax(outputs, dim=1)
-
-            _, predicted = torch.max(outputs, 1)
-            predictions.extend(predicted.cpu().numpy())
-
-    return predictions
+        output = model(image, source)  # Pass image and classification type
+        predicted_class = torch.argmax(output, dim=1).cpu().item()  # Get predicted label
+    
+    return output, predicted_class
 
 
 class NoviceNutriVision(torch.nn.Module):
