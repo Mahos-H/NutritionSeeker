@@ -101,24 +101,29 @@ class NoviceNutriVision(torch.nn.Module):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        #image_tensor = transform(image).unsqueeze(0).to(self.device)
-
+    
         # CNN Feature Extraction
-        visual_features = self.cnn(image_tensor).view(1, -1)
-
+        visual_features = self.cnn(image_tensor)  # Shape: [1, C, H, W]
+        visual_features = visual_features.view(1, -1)  # Flatten: [1, 62720]
+    
+        # **Fix: Use correct pooling function**
+        visual_features = torch.nn.functional.adaptive_avg_pool1d(visual_features.unsqueeze(1), 1280).squeeze(1)
+        
+        st.write("After CNN:", visual_features.shape)  # Should be [1, 1280]
+    
         # DistilBERT Processing
         text_input = "This is a food item."
         encoded_input = self.bert_tokenizer(text_input, return_tensors="pt", padding=True, truncation=True)
         text_features = self.bert_model(**{k: v.to(self.device) for k, v in encoded_input.items()}).last_hidden_state[:, 0, :]
-
-        # Fusion and Prediction
-        #st.write(visual_features.shape,text_features.shape)
-        visual_features = torch.nn.functional.adaptive_avg_pool1d(visual_features.unsqueeze(0), 1280).squeeze(0)
-        st.write("abc\n",visual_features.shape,text_features.shape)
-        xx=torch.cat([visual_features, text_features], dim=1)
-        st.write(xx.shape)
-        fused = self.fusion_fc(xx)
-
+    
+        st.write("Text Features:", text_features.shape)  # Should be [1, 768]
+    
+        # Concatenation
+        fused_input = torch.cat([visual_features, text_features], dim=1)  # Shape: [1, 2048]
+        st.write("Fused Input Shape:", fused_input.shape)
+    
+        fused = self.fusion_fc(fused_input)
+    
         if source == "food_nutrition":
             return self.food_nutrition_head(fused)
         elif source == "fv":
@@ -127,6 +132,7 @@ class NoviceNutriVision(torch.nn.Module):
             return self.fastfood_head(fused)
         else:
             raise ValueError("Invalid source")
+
 
 
 
