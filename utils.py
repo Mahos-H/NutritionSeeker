@@ -93,13 +93,13 @@ class NoviceNutriVision(torch.nn.Module):
         self.fv_head = torch.nn.Linear(512, fv_dim)
         self.fastfood_head = torch.nn.Linear(512, fastfood_dim)
 
-    def forward(self, image, source):
+    def forward(self, image_tensor, source):
         transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
-        image_tensor = transform(image).unsqueeze(0).to(self.device)
+        #image_tensor = transform(image).unsqueeze(0).to(self.device)
 
         # CNN Feature Extraction
         visual_features = self.cnn(image_tensor).view(1, -1)
