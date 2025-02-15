@@ -56,7 +56,7 @@ class NoviceNutriVision(nn.Module):
             nn.Linear(512, fastfood_dim)
         )
     
-    def forward(self, image, source):
+  def forward(self, image, source):
         """
         image: a PIL image.
         source: string indicating which nutrition head to use.
