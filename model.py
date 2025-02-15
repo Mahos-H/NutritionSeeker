@@ -24,8 +24,7 @@ settings["runs_dir"] = "/mount/src/nutritionseeker/test"
 with open(settings_path, "w") as file:
     json.dump(settings, file, indent=4)
 
-st.write("Settings updated successfully!")
-st.write(settings)
+yolo settings runs_dir ="/mount/src/nutritionseeker/test"
 os.environ["STREAMLIT_DEV_MODE"] = "false"
 CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
