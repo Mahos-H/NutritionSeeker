@@ -1,10 +1,7 @@
 streamlit
 Pillow
 opencv-python-headless==4.9.0.80
-matplotlib
 wordcloud
 torch
 torchvision
-scikit-learn
-pandas
-numpy
+
