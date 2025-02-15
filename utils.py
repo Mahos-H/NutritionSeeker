@@ -112,9 +112,9 @@ class NoviceNutriVision(torch.nn.Module):
         text_features = self.bert_model(**{k: v.to(self.device) for k, v in encoded_input.items()}).last_hidden_state[:, 0, :]
 
         # Fusion and Prediction
-        st.write(visual_features.shape,text_features.shape)
+        #st.write(visual_features.shape,text_features.shape)
         visual_features = torch.nn.functional.adaptive_avg_pool1d(visual_features.unsqueeze(0), 768).squeeze(0)
-        st.write("\n",visual_features.shape,text_features.shape)
+        st.write("abc\n",visual_features.shape,text_features.shape)
         xx=torch.cat([visual_features, text_features], dim=1)
         st.write(xx.shape)
         fused = self.fusion_fc(xx)
