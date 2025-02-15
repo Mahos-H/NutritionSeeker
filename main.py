@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from model import NoviceNutriVision
 from utils import load_model, predict 
 import torch
+from torchvision import transform
 torch.classes.__path__ = []
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -108,9 +109,22 @@ def setup_ui():
         selected_image = None
 
     if selected_image is not None:
+        if isinstance(selected_image, torch.Tensor):
+            st.error("Error: Image is already a Tensor! Make sure to pass a PIL Image.")
+        
+        # Define transformation inside the UI function (before prediction)
+        transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+        
+        # Transform the image and pass to model
+        image_tensor = transform(selected_image).unsqueeze(0).to(device)
+        
         with st.spinner("Loading model and running inference..."):
-            model, device = load_model()  # Assuming you have a function to load the model
-            pred_values, caption = predict( model,selected_image,selected_source)
+            model, device = load_model()  
+            pred_values, caption = predict(model, image_tensor, selected_source)
         
         st.markdown("## Inference Results")
         st.write("Generated Caption:", caption)
