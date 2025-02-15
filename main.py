@@ -110,12 +110,14 @@ def setup_ui():
         # Display Results
         st.markdown("## Inference Results")
         st.write("Generated Caption:", caption)
-        st.write("Predicted Nutritional Values:")
-
+        st.write("Predicted Probabilities:")
+        
         columns = source_columns[selected_source]
+        
         if len(pred_values) == len(columns):
-            result_dict = {col: [round(val, 2)] for col, val in zip(columns, pred_values)}
-            st.table(result_dict)
+            # Create a DataFrame-like table
+            prob_dict = {col: [f"{round(val * 100, 2)}%"] for col, val in zip(columns, pred_values)}
+            st.table(prob_dict)  # Display as a table
         else:
             st.write("Output vector:", pred_values)
     else:
