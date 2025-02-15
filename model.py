@@ -5,32 +5,17 @@ import wget
 from PIL import Image
 import numpy as np
 from torchvision import models, transforms
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from datetime import datetime
 from transformers import BertTokenizer, BertModel
 torch.classes.__path__ = []
 # --- Configuration ---
 CFG_FRCNN_MODEL = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
+CFG_DEEPLAB_MODEL = models.segmentation.deeplabv3_resnet50(pretrained=True)
 CFG_MODEL_DIR = "models/"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Ensure model directory exists
 os.makedirs(CFG_MODEL_DIR, exist_ok=True)
-
-
-@st.cache_resource
-def download_model(url, filename):
-    """Download a model if it does not exist."""
-    model_path = os.path.join(CFG_MODEL_DIR, filename)
-    if not os.path.exists(model_path):
-        st.write(f"Downloading {filename}...")
-        wget.download(url, out=model_path)
-    return model_path
-
-
-# --- Download SAM Model ---
-sam_model_path = download_model(CFG_SAM_MODEL_URL, "sam_vit_h_4b8939.pth")
 
 # --- Define NoviceNutriVision ---
 class NoviceNutriVision(torch.nn.Module):
@@ -41,10 +26,8 @@ class NoviceNutriVision(torch.nn.Module):
         # Faster R-CNN for object detection
         self.detector = CFG_FRCNN_MODEL.to(self.device).eval()
 
-        # SAM for segmentation
-        self.sam = sam_model_registry["vit_h"](checkpoint=sam_model_path)
-        self.sam.to(self.device).eval()
-        self.mask_generator = SamAutomaticMaskGenerator(self.sam)
+        # DeepLabV3 for segmentation
+        self.segmenter = CFG_DEEPLAB_MODEL.to(self.device).eval()
 
         # CNN for visual feature extraction (ResNet18)
         resnet = models.resnet18(pretrained=True)
@@ -68,9 +51,7 @@ class NoviceNutriVision(torch.nn.Module):
 
     def forward(self, image, source):
         # Step 1: Object Detection (Faster R-CNN)
-        transform = transforms.Compose([
-            transforms.ToTensor()
-        ])
+        transform = transforms.Compose([transforms.ToTensor()])
         image_tensor = transform(image).unsqueeze(0).to(self.device)
 
         results = self.detector(image_tensor)[0]  # Get detection results
@@ -85,14 +66,13 @@ class NoviceNutriVision(torch.nn.Module):
             crop = np.array(image)
             pred_class_label = "food"
 
-        # Step 2: Segmentation (SAM)
-        masks = self.mask_generator.generate(crop)
-        if masks and len(masks) > 0:
-            best_mask = max(masks, key=lambda m: m['area'])
-            seg_mask = best_mask['segmentation']
-            segmented = np.where(np.stack([seg_mask] * 3, axis=-1), crop, 0)
-        else:
-            segmented = crop
+        # Step 2: Segmentation (DeepLabV3)
+        crop_tensor = transform(Image.fromarray(crop)).unsqueeze(0).to(self.device)
+        seg_output = self.segmenter(crop_tensor)["out"]
+        seg_mask = torch.argmax(seg_output.squeeze(), dim=0).cpu().numpy()
+
+        # Apply segmentation mask
+        segmented = np.where(np.stack([seg_mask] * 3, axis=-1), crop, 0)
 
         # Step 3: Extract Features
         img_tensor = transforms.Compose([
