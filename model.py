@@ -4,29 +4,13 @@ import os
 import wget
 from PIL import Image
 import numpy as np
-from ultralytics import YOLO,settings
+from torchvision import models, transforms
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from datetime import datetime
-from torchvision import transforms
 from transformers import BertTokenizer, BertModel
-import torchvision.models as models
-import json
-settings_path = "/home/appuser/.config/Ultralytics/settings.json"
-
-# Load current settings
-with open(settings_path, "r") as file:
-    settings = json.load(file)
-
-# Update the "runs_dir" path
-settings["runs_dir"] = "/mount/src/nutritionseeker/test"
-
-# Write the updated settings back to the file
-with open(settings_path, "w") as file:
-    json.dump(settings, file, indent=4)
-
-yolo settings runs_dir ="/mount/src/nutritionseeker/test"
 os.environ["STREAMLIT_DEV_MODE"] = "false"
-CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
+# --- Configuration ---
+CFG_FRCNN_MODEL = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
 CFG_MODEL_DIR = "models/"
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -45,10 +29,8 @@ def download_model(url, filename):
     return model_path
 
 
-# --- Download Models ---
-yolo_model_path = download_model(CFG_YOLO_MODEL_URL, "yolov8n.pt")
+# --- Download SAM Model ---
 sam_model_path = download_model(CFG_SAM_MODEL_URL, "sam_vit_h_4b8939.pth")
-
 
 # --- Define NoviceNutriVision ---
 class NoviceNutriVision(torch.nn.Module):
@@ -56,14 +38,12 @@ class NoviceNutriVision(torch.nn.Module):
         super(NoviceNutriVision, self).__init__()
         self.device = device
 
-        # YOLOv8 for object detection
-        self.yolo_model = YOLO(yolo_model_path)
-        self.yolo_model.model.eval()
+        # Faster R-CNN for object detection
+        self.detector = CFG_FRCNN_MODEL.to(self.device).eval()
 
-        # SAM2 for segmentation
+        # SAM for segmentation
         self.sam = sam_model_registry["vit_h"](checkpoint=sam_model_path)
-        self.sam.to(self.device)
-        self.sam.eval()
+        self.sam.to(self.device).eval()
         self.mask_generator = SamAutomaticMaskGenerator(self.sam)
 
         # CNN for visual feature extraction (ResNet18)
@@ -87,23 +67,25 @@ class NoviceNutriVision(torch.nn.Module):
         self.fastfood_head = torch.nn.Linear(512, fastfood_dim)
 
     def forward(self, image, source):
-        # Step 1: Object Detection (YOLOv8)
-        image_np = np.array(image)
-        results = self.yolo_model(image_np, verbose=False)
-        
-        if results and len(results) > 0 and results[0].boxes is not None:
-            boxes = results[0].boxes
-            confs = boxes.conf.cpu().numpy()
-            best_idx = np.argmax(confs)
-            best_box = boxes.xyxy[best_idx].cpu().numpy()
-            x1, y1, x2, y2 = best_box.astype(int)
-            crop = image_np[y1:y2, x1:x2, :]
-            pred_class_label = self.yolo_model.model.names[int(boxes.cls[best_idx].cpu().numpy())]
+        # Step 1: Object Detection (Faster R-CNN)
+        transform = transforms.Compose([
+            transforms.ToTensor()
+        ])
+        image_tensor = transform(image).unsqueeze(0).to(self.device)
+
+        results = self.detector(image_tensor)[0]  # Get detection results
+
+        if len(results["boxes"]) > 0:
+            best_idx = torch.argmax(results["scores"]).item()
+            best_box = results["boxes"][best_idx].cpu().numpy().astype(int)
+            x1, y1, x2, y2 = best_box
+            crop = np.array(image)[y1:y2, x1:x2, :]
+            pred_class_label = str(results["labels"][best_idx].item())  # Class ID
         else:
-            crop = image_np
+            crop = np.array(image)
             pred_class_label = "food"
 
-        # Step 2: Segmentation (SAM2)
+        # Step 2: Segmentation (SAM)
         masks = self.mask_generator.generate(crop)
         if masks and len(masks) > 0:
             best_mask = max(masks, key=lambda m: m['area'])
