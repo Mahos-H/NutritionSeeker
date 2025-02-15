@@ -26,7 +26,7 @@ with open(settings_path, "w") as file:
 
 st.write("Settings updated successfully!")
 st.write(settings)
-torch.classes.__path__ = []
+os.environ["STREAMLIT_DEV_MODE"] = "false"
 CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
 CFG_MODEL_DIR = "models/"
