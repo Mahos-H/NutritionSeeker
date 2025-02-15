@@ -1,6 +1,5 @@
 streamlit
 Pillow
-opencv-python-headless==4.9.0.80
 wordcloud
 torch==2.5.1
 torchvision
