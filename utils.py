@@ -2,7 +2,7 @@ import os
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-#from transformers import BertTokenizer, BertModel
+import torch.nn.functional as F
 from transformers import DistilBertTokenizer, DistilBertModel
 import streamlit as st
 # --- Configuration ---
@@ -67,7 +67,7 @@ def predict(model, image_tensor, source):
 
     with torch.no_grad():
         output = model(image_tensor, source)  # Pass tensor and classification type
-        probabilities = torch.sigmoid(output).cpu().numpy().flatten() # Get predicted label
+        probabilities = F.softmax(output).cpu().numpy().flatten() # Get predicted label
     
     return output, probabilities
 class NoviceNutriVision(torch.nn.Module):
