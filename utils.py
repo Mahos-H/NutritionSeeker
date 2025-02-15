@@ -11,7 +11,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Change to "cpu" explicitly if you know CUDA isn't available
-device = "cpu"
+#device = "cpu"
 # Ensure model directory exists
 os.makedirs(MODEL_DIR, exist_ok=True)
 
@@ -29,8 +29,8 @@ MODEL_PATH = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
 @st.cache_resource
 def load_model():
     """Load the NoviceNutriVision model and return both the model and device."""
-    model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3).to(DEVICE)  
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))  
+    model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3).to(device)  
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=device))  
     model.eval()
     print(f"Model loaded from {MODEL_PATH}")
     return model, DEVICE  # Returning both the model and device
@@ -130,5 +130,5 @@ class NoviceNutriVision(torch.nn.Module):
 novice_model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3)
 
 model_path = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
-save_model(novice_model, model_path)
+#save_model(novice_model, model_path)
 loaded_model = load_model()
