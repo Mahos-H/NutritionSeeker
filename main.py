@@ -123,7 +123,7 @@ def setup_ui():
         image_tensor = transform(selected_image).unsqueeze(0).to(device)
         
         with st.spinner("Loading model and running inference..."):
-            model, device = load_model()  
+            model, _ = load_model()  
             pred_values, caption = predict(model, image_tensor, selected_source)
         
         st.markdown("## Inference Results")
