@@ -120,3 +120,4 @@ def setup_ui():
             st.write("Output vector:", pred_values)
     else:
         st.info("Please upload an image or capture one from the webcam to get predictions.")
+setup_ui()
