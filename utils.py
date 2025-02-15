@@ -112,8 +112,9 @@ class NoviceNutriVision(torch.nn.Module):
         text_features = self.bert_model(**{k: v.to(self.device) for k, v in encoded_input.items()}).last_hidden_state[:, 0, :]
 
         # Fusion and Prediction
-        visual_features = self.visual_fc(visual_features)  # Flatten
         st.write(visual_features.shape,text_features.shape)
+        visual_features = self.visual_fc(visual_features)  # Flatten
+        
         fused = self.fusion_fc(torch.cat([visual_features, text_features], dim=1))
 
         if source == "food_nutrition":
