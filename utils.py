@@ -69,10 +69,10 @@ def predict(model, image_tensor, source):
     
     return output, predicted_class
 class NoviceNutriVision(torch.nn.Module):
-    def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu"):
+    def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu",visual_fc):
         super(NoviceNutriVision, self).__init__()
         self.device = device
-
+        self.visual_fc = nn.Linear(63488, 2048)
         # Lightweight CNN for feature extraction
         mobilenet = models.mobilenet_v2(pretrained=True)
         self.cnn = torch.nn.Sequential(*list(mobilenet.features.children())).to(self.device).eval()
@@ -110,7 +110,7 @@ class NoviceNutriVision(torch.nn.Module):
         text_features = self.bert_model(**{k: v.to(self.device) for k, v in encoded_input.items()}).last_hidden_state[:, 0, :]
 
         # Fusion and Prediction
-        visual_features = visual_features.view(visual_features.size(0), -1)  # Flatten
+        visual_features = self.visual_fc(visual_features)  # Flatten
         fused = self.fusion_fc(torch.cat([visual_features, text_features], dim=1))
 
         if source == "food_nutrition":
