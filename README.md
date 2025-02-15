@@ -2,6 +2,8 @@
 
 *Author:* Soham Haldar
 
+**Live Demo:** [NutritionSeeker Streamlit App](https://nutritionseeker-jqq8idjmjseszjzuzahdlc.streamlit.app/)  
+
 NutritionSeeker is an advanced multi-modal deep learning system designed to assist dietitians and nutrition experts by estimating nutritional values from food images. By combining state-of-the-art computer vision and natural language processing techniques, NutritionSeeker robustly processes diverse food imagery and predicts key nutritional attributes. The system integrates:
 
 - *YOLOv8* for real-time food object detection.
