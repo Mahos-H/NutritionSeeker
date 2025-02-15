@@ -69,7 +69,7 @@ def predict(model, image_tensor, source):
     
     return output, predicted_class
 class NoviceNutriVision(torch.nn.Module):
-    def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu",visual_fc):
+    def __init__(self, food_nutrition_dim, visual_fc,fv_dim, fastfood_dim, device="cpu"):
         super(NoviceNutriVision, self).__init__()
         self.device = device
         self.visual_fc = nn.Linear(63488, 2048)
