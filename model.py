@@ -4,7 +4,7 @@ from ultralytics import YOLO
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
-torch.classes.__path__ = []
+#torch.classes.__path__ = []
 class NoviceNutriVision(nn.Module):
   def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cuda"):
         """
