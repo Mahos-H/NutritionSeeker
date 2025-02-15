@@ -5,3 +5,4 @@ wordcloud
 torch
 torchvision
 numpy<2
+ultralytics
