@@ -10,17 +10,21 @@ from datetime import datetime
 from torchvision import transforms
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
+settings_path = "/home/appuser/.config/Ultralytics/settings.json"
+
+# Load current settings
+with open(settings_path, "r") as file:
+    settings = json.load(file)
+
+# Update the "runs_dir" path
+settings["runs_dir"] = "/mount/src/nutritionseeker/test"
+
+# Write the updated settings back to the file
+with open(settings_path, "w") as file:
+    json.dump(settings, file, indent=4)
+
+st.write("Settings updated successfully!")
 st.write(settings)
-
-# Return a specific setting
-value = settings["runs_dir"]
-st.write(value)
-# --- Configuration ---
-#runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
-
-settings.update({"runs_dir": "/mount/src/nutritionseeker/test"})
-value = settings["runs_dir"]
-st.write(value)
 torch.classes.__path__ = []
 CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
