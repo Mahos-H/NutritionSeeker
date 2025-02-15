@@ -5,6 +5,7 @@ from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
 torch.classes.__path__ = []
+device = "cuda" if torch.cuda.is_available() else "cpu"
 class NoviceNutriVision(nn.Module):
   def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cuda"):
         """
