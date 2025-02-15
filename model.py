@@ -16,11 +16,9 @@ st.write(settings)
 value = settings["runs_dir"]
 st.write(value)
 # --- Configuration ---
-runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
-os.makedirs(runs_dir, exist_ok=True)
+#runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
 
-# Update settings to use this directory
-settings.update({"runs_dir": runs_dir})
+settings.update({"runs_dir": "/mount/src/nutritionseeker/test"})
 value = settings["runs_dir"]
 st.write(value)
 torch.classes.__path__ = []
