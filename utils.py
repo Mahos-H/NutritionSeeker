@@ -23,7 +23,7 @@ def load_model(model_class, filepath):
     model.load_state_dict(torch.load(filepath, map_location=DEVICE))
     model.eval()
     print(f"Model loaded from {filepath}")
-    return model
+    return model, DEVICE 
 
 
 def predict(model, dataloader):
