@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import cv2
+import os
 from PIL import Image
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
