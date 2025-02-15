@@ -139,4 +139,4 @@ novice_model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3
 
 model_path = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
 save_model(novice_model, model_path)
-loaded_model = load_model(lambda: NoviceNutriVision(10, 5, 3), model_path)
+loaded_model = load_model()
