@@ -35,7 +35,7 @@ def load_model():
 
 
 from PIL import Image
-def predict(model, image, source):
+def predict(model, image_tensor, source):
     """
     Predict the class for a single image using the trained model.
     
@@ -51,7 +51,7 @@ def predict(model, image, source):
     model.eval()
 
     # Ensure the input is a PIL Image object
-    if isinstance(image, str):  
+    if isinstance(image_tensor, str):  
         image = Image.open(image).convert("RGB")  # Load from path if it's a string
 
     # Define the same transformations as used during training
@@ -61,7 +61,7 @@ def predict(model, image, source):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
     
-    image_tensor = transform(image).unsqueeze(0).to(DEVICE)  # Add batch dimension
+    #image_tensor = transform(image).unsqueeze(0).to(DEVICE)  # Add batch dimension
 
     with torch.no_grad():
         output = model(image_tensor, source)  # Pass tensor and classification type
