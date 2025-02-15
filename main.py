@@ -110,7 +110,7 @@ def setup_ui():
     if selected_image is not None:
         with st.spinner("Loading model and running inference..."):
             model, device = load_model()  # Assuming you have a function to load the model
-            pred_values, caption = predict(selected_image, selected_source, model, device)
+            pred_values, caption = predict( model,selected_image)
         
         st.markdown("## Inference Results")
         st.write("Generated Caption:", caption)
