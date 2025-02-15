@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from model import NoviceNutriVision
 from utils import load_model, predict 
 import torch
-from torchvision import transform
+from torchvision import transforms
 torch.classes.__path__ = []
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
