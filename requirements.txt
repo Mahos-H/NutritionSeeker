@@ -5,7 +5,5 @@ wordcloud
 torch==2.5.1
 torchvision
 numpy<2
-ultralytics
-segment_anything
 transformers
 wget
