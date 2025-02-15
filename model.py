@@ -10,7 +10,7 @@ from datetime import datetime
 from torchvision import transforms
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
-
+torch.classes.__path__ = []
 # --- Configuration ---
 CFG_YOLO_MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
