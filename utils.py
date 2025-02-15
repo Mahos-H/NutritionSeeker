@@ -30,7 +30,7 @@ MODEL_PATH = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
 def load_model():
     """Load the NoviceNutriVision model and return both the model and device."""
     model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3).to(device)  
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=device))  
+    #model.load_state_dict(torch.load(MODEL_PATH, map_location=device))  
     model.eval()
     print(f"Model loaded from {MODEL_PATH}")
     return model, DEVICE  # Returning both the model and device
