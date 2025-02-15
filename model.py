@@ -7,6 +7,7 @@ import numpy as np
 from torchvision import models, transforms
 from datetime import datetime
 from transformers import BertTokenizer, BertModel
+from transformers import DistilBertTokenizer, DistilBertModel
 torch.classes.__path__ = []
 # --- Configuration ---
 CFG_FRCNN_MODEL = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
