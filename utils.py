@@ -16,14 +16,19 @@ def save_model(model, filepath):
     torch.save(model.state_dict(), filepath)
     print(f"Model saved as {filepath}")
 
+from model import NoviceNutriVision  # Ensure the correct model class is imported
 
-def load_model(model_class, filepath):
-    """Load model state dictionary into a model instance."""
-    model = model_class().to(DEVICE)
-    model.load_state_dict(torch.load(filepath, map_location=DEVICE))
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+MODEL_DIR = "models/"
+MODEL_PATH = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
+
+def load_model():
+    """Load the NoviceNutriVision model and return both the model and device."""
+    model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3).to(DEVICE)  
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))  
     model.eval()
-    print(f"Model loaded from {filepath}")
-    return model, DEVICE 
+    print(f"Model loaded from {MODEL_PATH}")
+    return model, DEVICE  # Returning both the model and device
 
 
 def predict(model, dataloader):
