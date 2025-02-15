@@ -10,7 +10,10 @@ from datetime import datetime
 from torchvision import transforms
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
+print(settings)
 
+# Return a specific setting
+value = settings["runs_dir"]
 # --- Configuration ---
 runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
 os.makedirs(runs_dir, exist_ok=True)
