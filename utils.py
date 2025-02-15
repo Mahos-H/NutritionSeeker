@@ -6,7 +6,10 @@ from transformers import BertTokenizer, BertModel
 # --- Configuration ---
 MODEL_DIR = "models/"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
+# Change to "cpu" explicitly if you know CUDA isn't available
+device = "cpu"
 # Ensure model directory exists
 os.makedirs(MODEL_DIR, exist_ok=True)
 
