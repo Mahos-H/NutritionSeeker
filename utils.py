@@ -35,14 +35,13 @@ def load_model():
 
 
 from PIL import Image
-
-def predict(model, image_path, source):
+def predict(model, image, source):
     """
     Predict the class for a single image using the trained model.
     
     Parameters:
     - model: Trained NoviceNutriVision model.
-    - image_path: Path to the image file.
+    - image: Image file path (str) or a PIL.Image object.
     - source: Classification type ('food_nutrition', 'fv', or 'fastfood').
     
     Returns:
@@ -50,17 +49,25 @@ def predict(model, image_path, source):
     """
     model.to(DEVICE)
     model.eval()
+
+    # Ensure the input is a PIL Image object
+    if isinstance(image, str):  
+        image = Image.open(image).convert("RGB")  # Load from path if it's a string
+
+    # Define the same transformations as used during training
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
     
-    # Load image
-    image = Image.open(image_path).convert("RGB")  # Ensure it's in RGB format
+    image_tensor = transform(image).unsqueeze(0).to(DEVICE)  # Add batch dimension
 
     with torch.no_grad():
-        output = model(image, source)  # Pass image and classification type
+        output = model(image_tensor, source)  # Pass tensor and classification type
         predicted_class = torch.argmax(output, dim=1).cpu().item()  # Get predicted label
     
     return output, predicted_class
-
-
 class NoviceNutriVision(torch.nn.Module):
     def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu"):
         super(NoviceNutriVision, self).__init__()
