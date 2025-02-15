@@ -10,8 +10,7 @@ from transformers import BertTokenizer, BertModel
 from transformers import DistilBertTokenizer, DistilBertModel
 torch.classes.__path__ = []
 # --- Configuration ---
-CFG_FRCNN_MODEL = models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-CFG_DEEPLAB_MODEL = models.segmentation.deeplabv3_resnet50(pretrained=True)
+
 CFG_MODEL_DIR = "models/"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 class NoviceNutriVision(torch.nn.Module):
