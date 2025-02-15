@@ -10,18 +10,19 @@ from datetime import datetime
 from torchvision import transforms
 from transformers import BertTokenizer, BertModel
 import torchvision.models as models
-print(settings)
+st.write(settings)
 
 # Return a specific setting
 value = settings["runs_dir"]
+st.write(value)
 # --- Configuration ---
 runs_dir = os.path.join(os.getcwd(), "ultralytics_runs")
 os.makedirs(runs_dir, exist_ok=True)
 
 # Update settings to use this directory
 settings.update({"runs_dir": runs_dir})
-
-print(f"Ultralytics runs directory set to: {runs_dir}")
+value = settings["runs_dir"]
+st.write(value)
 torch.classes.__path__ = []
 CFG_YOLO_MODEL_URL = "https://huggingface.co/Ultralytics/YOLOv8/resolve/main/yolov8n.pt"
 CFG_SAM_MODEL_URL = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
