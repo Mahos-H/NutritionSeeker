@@ -113,7 +113,7 @@ class NoviceNutriVision(torch.nn.Module):
 
         # Fusion and Prediction
         #st.write(visual_features.shape,text_features.shape)
-        visual_features = self.visual_fc(visual_features)
+        visual_features = torch.nn.functional.adaptive_avg_pool1d(visual_features.unsqueeze(0), 1280).squeeze(0)
         st.write("abc\n",visual_features.shape,text_features.shape)
         xx=torch.cat([visual_features, text_features], dim=1)
         st.write(xx.shape)
