@@ -8,3 +8,6 @@ numpy<2
 ultralytics
 segment_anything
 transformers
+freeglut3-dev
+libgtk2.0-dev
+libgl1-mesa-glx
