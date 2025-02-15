@@ -113,6 +113,7 @@ class NoviceNutriVision(torch.nn.Module):
 
         # Fusion and Prediction
         visual_features = self.visual_fc(visual_features)  # Flatten
+        st.write(visual_features.shape,text_features.shape)
         fused = self.fusion_fc(torch.cat([visual_features, text_features], dim=1))
 
         if source == "food_nutrition":
