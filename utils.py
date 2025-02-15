@@ -56,7 +56,7 @@ def predict(model, dataloader):
 
 
 class NoviceNutriVision(torch.nn.Module):
-    def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cuda"):
+    def __init__(self, food_nutrition_dim, fv_dim, fastfood_dim, device="cpu"):
         super(NoviceNutriVision, self).__init__()
         self.device = device
 
