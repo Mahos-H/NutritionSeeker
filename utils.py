@@ -4,6 +4,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 from transformers import BertTokenizer, BertModel
 from transformers import DistilBertTokenizer, DistilBertModel
+import streamlit as st
 # --- Configuration ---
 MODEL_DIR = "models/"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -25,7 +26,7 @@ from model import NoviceNutriVision  # Ensure the correct model class is importe
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MODEL_DIR = "models/"
 MODEL_PATH = os.path.join(MODEL_DIR, "novice_nutrivision.pth")
-
+@st.cache_resource
 def load_model():
     """Load the NoviceNutriVision model and return both the model and device."""
     model = NoviceNutriVision(food_nutrition_dim=10, fv_dim=5, fastfood_dim=3).to(DEVICE)  
